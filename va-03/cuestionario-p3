@@ -1,0 +1,93 @@
+Cuestionario teórico - Práctica-3
+==================================
+
+1.- ¿Cuales son los elementos básicos de un modelo de cámara pin-hole? Justificar la respuesta.
+- Plano de proyección: Es el plano sobre el que se proyecta la imagen
+- Centro de la cámara: Es el punto de fuga de la proyección
+- Eje principal: Recta que pasa por el centro de la cámara y el plano de proyección
+- Punto principal: Punto de corte del eje principal con el plano de proyección
+- f: Distancia desde el  centro de la cámara al punto principal
+###########################################################################################################################################
+2.- ¿Es la cámara pin-hole una cámara de proyección central? Justificar la respuesta.
+Si, en una cámara de proyección central todos los puntos pasan por un punto de fuga como ocurre en el centro de la cámara en una cámara tipo pin-hole.
+###########################################################################################################################################
+3.- ¿Que ecuaciones son las fundamentales para calcular la proyección de un punto del espacio en una imagen usando una cámara pin-hole?. Justificar la respuesta.
+La ecuación es (x’, y’)^T = f / z (x, y)^T <== > x’ = f x / z, Y = f y / z,
+se obtienen mediante semejanza de triángulos  o trigonometría básica tal que:
+tan(Y) = y / z -> y’ = f * tan(Y) => y' = f * y / z
+###########################################################################################################################################
+4.- ¿Por que son necesarias las lentes de una cámara fotográfica? Justificar la respuesta.
+Son necesarias para hacer converger la luz en un punto  y así  reducir el desenfoque propio del aumento de la apertura. Una apertura "grande" es necesaria para aumentar la cantidad de luz que recibe la cámara y así poder aumentar la velocidad de obturación, lo que aumenta la velocidad con la que se realizan las fotos.
+###########################################################################################################################################
+5.- ¿Que relación existe entre la apertura de una cámara y su capacidad para obtener fotos enfocadas a distintas distancias?
+Al reducir la apertura se reduce la cantidad de rayos (se reduce el circulo de confusión) que se reciben de cada punto de la escena y, de esta manera, los puntos fuera del plano enfocado aparecen mas nítidos
+###########################################################################################################################################
+6.- ¿Porque es útil formular el modelo matemático de una cámara como una matriz que proyecta puntos en coordenadas homogéneas.
+Porque de esta manera la cámara se convierte en una aplicación lineal. En coordenadas cartesianas se tiene que  (X, Y, Z ) - f -> (X / Z, Y / Z) que no es una aplicación lineal, al transformarlo  en coordenadas homogéneas  (X / Z, Y / Z)^T  ⇒  (fx, fy, Z)^T se tiene una aplicación f: (X, Y, Z) ->(fX, fY, Z) que si es lineal,
+###########################################################################################################################################
+7.- ¿Que tipo de cámara es una cámara finita? Justificar la respuesta.
+----- No tengo nada claro a lo que se refiere esta pregunta -----
+Una cámara de finita es una cámara de proyección central en la que todos los rayos pasan por el centro de la cámara Dado que PC = 0 se puede demostrar que C es el centro de la cámara Partiendo de la forma vectorial de la ecuación de la recta que pasa por un punto cualquiera A y el centro de la cámara C
+X(L) = L·A + (1 - L) C
+Aplicando la matriz de la cámara P a los puntos de la recta tenemos que
+x = P·X(L) = LPA + (1 - L) PC
+Teniendo en cuenta que P·C = 0
+x = LPA <=> x = PA (dado que P es invariante a escala)
+Se concluye que todos los puntos  de la recta X(L) se proyectan sobre el mismo punto, esto implica que todas las lineas de proyección pasan por C
+###########################################################################################################################################
+8.- ¿Cualquier matriz 3x4 representa una cámara? Justificar la respuesta.
+No, según el tipo de cámara:
+Cámaras finitas:
+  Dado que la matriz cámara puede descomponerse como P = KR [ I | -C] donde R es una matriz de rotación  (y por tanto ortogonal) y K es
+  triangular superior  luego se tiene que KR es similar a una factorización QR de una matriz M = KR. luego también se sabe que tiene
+  det(M) = det(K)*det(R), det(R) != 0 por ser matriz de rotación y det(K) != 0 por construcción esto implica que det(M) != 0,
+  por tanto la matriz M triangular superior de la matriz P es no singular y por tanto P tiene rango 3.
+
+Cámaras generales:
+  Si se elimina la restricción aplicada a las cámaras finitas debe mantenerse que rango(P) = 3 en otro caso la proyección a través de P
+  sera una linea o un punto, no un plano y por lo tanto no una imagen 2D
+###########################################################################################################################################
+9.- ¿Es posible calcular el centro de cualquier cámara a partir de su matriz? Justificar la respuesta
+  Si, el centro de la cámara es el punto C tal que P·C = 0
+###########################################################################################################################################
+10.- ¿Cuantas correspondencias son necesarias para estimar la matriz de una cámara? Justificar la respuesta
+  La situación es la misma que en la estimación de las homografías, solo cambia la dimensión, de 3x3 a 3x4, por lo tanto se tienen 12
+  grados de libertad, 11 en realidad pues se puede ignorar la escala. Cada pareja en correspondencia da tres ecuaciones pero una de ellas
+  es linealmente dependiente de las otras, por cada pareja se obtienen dos ecuaciones LI por lo tanto se necesitan 5’5 parejas es decir 6.
+###########################################################################################################################################
+11 .-¿ Que información de una escena 3D se pierde siempre en una fotografía de la misma? Justificar la respuesta
+  - La profundidad, puesto que tras proyectar todos los puntos que están sobre un mismo rayo son proyectados sobre el mismo punto de la
+  imagen.
+  - Los ángulos, aunque se mantiene la colinealidad, las rectas paralelas se cortan en los puntos de fuga. Esto puede demostrase calculando
+  la proyección de dos puntos de dos rectas paralelas y comprobando que la ecuación de las rectas que generan las proyecciones de esos
+  puntos se cortan.
+###########################################################################################################################################
+12.- ¿Cual es la relación entre una cámara finita y una cámara afín? Justificar la respuesta
+  Dada una cámara finita, si esta se mueve hacia atrás a la vez que se escala para mantener la misma escena encuadrada cuando la distancia
+  sea infinita la finita deriva en una cámara con la ultima fila de la forma (0, 0, 0, k), o (0, 0, 0, 1) si se divide por k, que es la
+  forma de una cámara afín.
+###########################################################################################################################################
+13.- ¿De que depende el error de proyección de una cámara afín? Justificar la respuesta
+  x_proyección = P_0·X  = K (x y d_0 + Alfa)^T
+  x_afin = P_inf · X = K (x y d_0)^T
+Reescribiendo las matrices teniendo en cuenta que
+    K = | K_2x2  x_0|
+        | 0^T     1 |
+se tiene que
+        x_proyección = |K_2x2 x + (d_0+ Alfa)*x0|
+                       |         d_0 + Alfa     |
+
+        x_afin = |K_2x2 x + d_0 x_0|
+                 |     d_0         |
+
+Y el error será:
+  x_afin - x_proyección = Alfa/d_0 (x_proyección - x_0)
+
+Donde Alfa es la profundidad media del objeto y d_0 la distancia media al objeto es decir, el error sera mayor cuanto mayor sea el factor
+Alfa/d_0 o, equivalentemente, cuanto menos despreciable sea la profundidad media del objeto con respecto a la distancia al mismo.
+Este error se debe a que la cámara afín realiza una proyección paralela de la zona de la escena tras del plano situado a distancia d_0 del
+centro de la cámara, sobre el que además realiza la proyección, con lo que se pierde el aporte de la profundidad de dicha zona a la escena
+###########################################################################################################################################
+14.- ¿Seria posible rectificar la deformación de las lentes de las imágenes que han sido descartadas en el proceso de calibración de la cámara? Justificar la respuesta
+  Si, los parámetros de calibración de la cámara son propios de esta y no de las imágenes usadas para calibrarla, las transformaciones
+  producidas por la cámara están presentes en todas las imágenes tomadas por esta, no solo en las aptas para ser usadas como calibración

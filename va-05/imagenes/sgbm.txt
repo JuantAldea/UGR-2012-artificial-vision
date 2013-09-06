@@ -1,0 +1,10 @@
+sgbm.SADWindowSize=31;
+sgbm.P1 = 8*sgbm.SADWindowSize*sgbm.SADWindowSize;
+sgbm.P2 = 32*sgbm.SADWindowSize*sgbm.SADWindowSize;
+sgbm.minDisparity = 0;
+sgbm.uniquenessRatio = 10;
+sgbm.speckleWindowSize = 20;
+sgbm.speckleRange = 32;
+sgbm.disp12MaxDiff = 1;
+sgbm.numberOfDisparities=32;
+sgbm.fullDP=1;

@@ -1,0 +1,76 @@
+Visión Artificial
+
+Cuestionario de la Práctica-2
+
+- Definir matematicamente el concepto de homografia entre planos.
+   Una homografía es una aplicación biyectiva entre dos planos que conserva la colinealidad (transforma lineas rectas en lineas rectas).
+
+- ¿Que tipo de transformaciones del plano esta recogidos dentro del concepto de homografía?. Describir brevemente sus diferencias.
+    - Afines: Conservan el paralelismo.
+    - Proyectivas: Conservan únicamente la linealidad y la concurrencia
+
+- ¿Porqué es útil la introducción de coordenadas homogeneas? Justificar la respuesta con algún ejemplo.
+    Sirven para definir puntos en el infinito sin perder la dirección. También son útiles para representar todas las transformaciones
+    afines mediante una única matriz. Por ejemplo, una matriz de translación (en 3D) se obtiene colocando el valor de la translación como
+    4ª columna de la matriz identidad 4x4.
+
+-  Si nos dicen que el vector director de una recta en coordenadas homogéneas es (0, 0, 1). ¿A que distancia está esa recta del origen de coordenadas? Justificar la respuesta.
+  A distancia infinita, dado que para que se verifique (0, 0, 1) (x, y, k)' = 0 tiene que cumplirse que k = 0 -> Cualesquiera que sean las
+  coordenadas  x e y siempre estarán en el infinito.
+
+- ¿Como se pasa de coordenadas homogéneas a coordenadas afín?. Justificar la respuesta.
+    Multiplicando x e y por el valor de z siempre que z no sea 0, en cuyo caso el punto no esta en el plano cartesiano.
+    Un punto (x, y) en coordenadas cartesianas esta dado por dos proporciones (X/Z, Y/Z) por tanto ese punto puede ser representado como
+    (X, Y, Z) = (xZ, yZ, Z) por lo tanto, un punto en coordenadas homogéneas (A, B, Z) = (aZ, bZ, Z) = (a, b) en coordenadas afines.
+
+- Si deseamos obtener una estimación de la homografía entre dos planos ¿Cual es la información mínima necesitamos? Justificar la respuesta.
+    Dado que una homografía es una matriz 3x3 en principio hay que determinar 9 grados de libertad, sin embargo la matriz es invariante
+    respecto a la escala, por tanto se puede fijar uno de los grados de libertad y estimar los otros 8 en función de este. Como hay que
+    determinar 8 grados de libertad y cada punto proporciona dos ecuaciones se necesitan un mínimo de 4 puntos.
+
+- ¿Cuantas ecuaciones independientes nos genera una pareja de puntos en correspondencias para la estimación de una homografía?.Justificar la respuesta.
+  Dos ecuaciones. Cada punto genera tres ecuaciones a partir de x'_i * Hx_i = 0, solo dos son linealmente independientes puesto que la
+  tercera ecuación, la que depende de la tercera coordenada, se obtiene (salvo escala) como  (x'_i * primera fila de H + (-y'_i) * segunda
+  fila de H)
+
+- ¿Que es el algoritmo RANSAC y para que se usa en la estimación de una homografía? Justificar la respuesta.
+    Es un algoritmo para estimación de los parámetros de un modelo matemático. Se basa en la idea de asumir que hay puntos erróneos que no
+    deben ser tenidos en cuenta para realizar la estimación, es por eso que trata de satisfacer el máximo numero de restricciones dadas por
+    los puntos en lugar tratar de alcanzar un consenso que se ve afectado por los puntos aberrantes. Se usa en la estimación de las
+    homografías porque los datos
+    (las parejas en correspondencia) contienen errores muy grandes y por lo tanto no se puede utilizar una estimación por mínimos cuadrados
+
+- ¿Como encontraría la solución de un sistema de ecuaciones lineal homogéneo con mayor número de ecuaciones que de incognitas? Justificar la respuesta.
+  Usando álgebra solo se pueden resolver sistemas con el mismo numero de ecuaciones que de incógnitas. Si el sistema está sobredeterminado
+  (el rango de la matriz de coeficientes es mayor al numero de incógnitas) hay que encontrar un vector solución que minimice el residuo
+  r = Ah - b, por ejemplo mediante un ajuste por mínimos cuadrados o el metodo RANSAC. Además hay que tener en cuenta que la solución 0
+  no interesa por lo que hay que restringir la búsqueda a ||h||!=0
+
+- Si nos dan cuatro correspondencias entre dos imágenes y tres de ellas están alineadas , ¿es posible estimar una homografía entre las imágenes? Justificar la respuesta.
+    No, si se tienen tres puntos colineales uno de los puntos es combinación lineal de los otros dos, por lo que el rango de la matriz es
+    como máximo 3 y el sistema no tiene solución única.
+
+- ¿Que combinaciones de tipo de escena y movimiento de cámara son adecuadas para obtener imágenes útiles para la creación de mosaicos? Justificar la respuesta.
+    - Escena plana/infinito -> Cualquier transformación.
+    - Escena tridimensional -> Rotaciones de la cámara.
+     Si la escena esta en el infinito la relación entre la distancia que separa los objetos de la escena y la distancia a la cámara es casi 0 por tanto una translación apenas modifica la zona de la escena que ocultan los objetos de la escena, esto no ocurre si la escena es 3D, si se traslada la cámara la zona que ocultan los objetos se modifica drásticamente.
+
+- ¿Porque se necesita una  etapa final de optimización iterativa? ¿Que es lo que añade que no está en el algoritmo lineal inicial?
+  Porque la H calculada tiene errores, el problema es que al modificar H se ajustan unos puntos y se desajustan otros, la forma de paliar
+  esto pasa por suponer que no se han medido puntos exactos, sino puntos próximos, la forma de estimar el error entre el punto correcto y
+  el punto medido pasa por determinar la pareja de puntos que esta a distancia mínima del punto medido y que verifica la H.
+   La etapa iterativa sirve para refinar la homografía añadiendo información a partir de puntos en correspondencia que fueron descartados
+   inicialmente.
+
+- Si deseamos obtener la mejor estimación posible de una homografía de acuerdo a las correspondencias iniciales, ¿Que pasos deberiamos de dar? Enumerarlos y en su caso dar una breve descripción.
+  Estimar la homografía mediante la técnica RANSAC
+    - Tomar cuatro puntos en correspondencia y estimar una homografía
+      - Aplicar la homografía a todos los puntos y contar cuantos de ellos aceptan esa homografía (error < umbral)
+    - Repetir un numero de veces dependiente del la cantidad de medidas incorrectas que se estimen.
+    - Tomar la h más votada.
+    - Encontrar los putos mas próximos a los puntos en correspondencia que verifican H perfectamente y usarlos para refinar H
+      - La idea subyacente a esto es asumir que no se han medido los puntos exactamente, sino puntos próximos.
+    - Usar H para recuperar correspondencias inicialmente desechadas
+       - Parejas de puntos que no fueran catalogados como correspondencias en el conjunto de correspondencias iniciales pueden
+	recuperarse si al aplicar H (o dualmente H^-1) sobre el punto se llega a su pareja (o al entorno)
+    - Iterar estos dos últimos pasos para refinar progresivamente.
